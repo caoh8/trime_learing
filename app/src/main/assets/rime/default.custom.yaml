@@ -1,0 +1,15 @@
+customization:
+  distribution_code_name: ""
+  distribution_version: ""
+  generator: "Rime::SwitcherSettings"
+  modified_time: "Tue Sep  3 18:15:07 2019"
+  rime_version: 1.4.0
+patch:
+  "ascii_composer/good_old_caps_lock": true
+  "ascii_composer/switch_key":
+    Caps_Lock: commit_code
+    Shift_L: commit_code
+    Shift_R: inline_ascii
+  schema_list:
+    - {schema: luna_jiugong}
+    - {schema: luna_pinyin}

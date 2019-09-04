@@ -1,0 +1,135 @@
+# Rime schema
+# encoding: utf-8
+
+schema:
+  schema_id: luna_jiugong
+  name: 朙月九宮
+  version: "0.23"
+  author:
+    - 佛振 <chen.sst@gmail.com>
+    - Uncle光 <467896722@qq.com>
+  description: |
+    Rime 預設的拼音輸入方案。
+    以字之前兩筆作輔助碼
+    參考以下作品而創作：
+      * CC-CEDICT
+      * Android open source project
+      * Chewing - 新酷音
+      * opencc - 開放中文轉換
+  dependencies:
+    - liangfen
+
+switches:
+  - name: ascii_mode
+    reset: 0
+    #states: [ 中文, 西文 ]
+  - name: full_shape
+    #states: [ 半角, 全角 ]
+  - name: simplification
+    #states: [ 漢字, 汉字 ]
+  - name: ascii_punct
+    #states: [ 。，, ．， ]
+ # - options: [  _key_IME_switch ]
+    #states: [ 🌐]
+  - options: [  _keyboard_menu ]
+    states: [  "☰"]
+  - options: [ _keyboard_.default, _keyboard_emoji ]
+    states: [ 😊, 😂]
+    # 这是一个空按键，按下去不会执行任何动作 
+ # - options: [ _key_VoidSymbol ] 
+   # states: [ "                                          " ] #空键的宽度由这里的空格决定
+  #- options: [ _key_Hide ] #收起键盘
+   # states: [ "▼" ]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - table_translator@custom_phrase
+    - reverse_lookup_translator
+    - script_translator
+  filters:
+    - simplifier
+    - uniquifier
+
+speller:
+  alphabet: 'zyxwvutsrqponmlkjihgfedcba1234567890+_*^'
+  delimiter: " '"
+  algebra:
+    - "xlit|12345|+_*^0|"
+    - erase/^xx$/
+    - abbrev/^([zcs]h).+$/$1/
+    - derive/^([nl])ve$/$1ue/
+    - derive/^([jqxy])u/$1v/
+    - derive/un$/uen/
+    - derive/ui$/uei/
+    - derive/iu$/iou/
+    - derive/([aeiou])ng$/$1gn/
+    - derive/([dtngkhrzcs])o(u|ng)$/$1o/
+    - derive/ong$/on/
+    - derive/ao$/oa/
+    - derive/([iu])a(o|ng?)$/a$1$2/
+    - xlit/abcdefghijklmnopqrstuvwxyz/22233344455566677778889999/
+    - derive/[+_*^0]//
+    - derive/([+_*^0])$//
+    - derive/^(.*)$/\U$1/
+
+translator:
+  dictionary: luna_jiugong
+  spelling_hints: 16
+  preedit_format:
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+  comment_format:
+    - xform/[12345]//
+
+custom_phrase:
+  dictionary: ""
+  user_dict: custom_phrase
+  db_class: stabledb
+  enable_completion: false
+  enable_sentence: false
+  initial_quality: 1
+
+reverse_lookup:
+  dictionary: liangfen
+  enable_completion: true
+  prefix: "`"
+  suffix: "'"
+  tips: 〔兩分〕
+  preedit_format:
+    - "xlit|v|ü|"
+    - xform/iü/iv/
+    - xform/uü/uv/
+  comment_format:
+    - "xlit|v|ü|"
+    - xform/iü/iv/
+    - xform/uü/uv/
+    - xform/[12345]//
+
+punctuator:
+  import_preset: symbols
+
+key_binder:
+  import_preset: default
+
+recognizer:
+  import_preset: default
+  patterns:
+    punct: "^/([0-9]0?|[a-z]+)$"
+    reverse_lookup: "`[a-z]*'?$"

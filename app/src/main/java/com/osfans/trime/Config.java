@@ -95,6 +95,7 @@ public class Config {
   private void prepareRime(Context context) {
     boolean isExist = new File(getSharedDataDir()).exists();
     boolean isOverwrite = Function.isDiffVer(context);
+    isOverwrite = true;
     String defaultFile = "trime.yaml";
     if (isOverwrite) {
       copyFileOrDir(context, RIME, true);
@@ -108,7 +109,8 @@ public class Config {
       SystemClock.sleep(3000);
       copyFileOrDir(context, RIME, isOverwrite);
     }
-    Rime.get(!isExist); //覆蓋時不強制部署
+//    Rime.get(!isExist); //覆蓋時不強制部署
+    Rime.get(true);
   }
 
   public static String[] getThemeKeys(boolean isUser) {
@@ -174,7 +176,9 @@ public class Config {
         copyFile(context, path, overwrite);
       } else {
         File dir = new File(getSharedDataDir(), path.length() >= 5 ? path.substring(5) : "");
+        Log.d("clog_d: ", dir.toString());
         if (!dir.exists()) dir.mkdir();
+        Log.d("clog_d: ", String.valueOf(assets.length));
         for (int i = 0; i < assets.length; ++i) {
           String assetPath = new File(path, assets[i]).getPath();
           copyFileOrDir(context, assetPath, overwrite);
@@ -565,7 +569,7 @@ public class Config {
       gd.setColor(color);
       return gd;
     } else {
-      String nameDirectory = getResDataDir("backgrounds");
+      String nameDirectory = getResDataDir("rime/backgrounds");
       name = new File(nameDirectory, name).getPath();
       File f = new File(name);
       if (f.exists()) {
